@@ -37,11 +37,22 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO {
 	@Override
 	public Employee findById(int theId) {
 		
-		return null;
+		// get the employee
+		Employee theEmployee =
+				entityManager.find(Employee.class, theId);
+		
+		// return the employee
+		return theEmployee;
 	}
 
 	@Override
 	public void save(Employee theEmployee) {
+		
+		// save or update the employee
+		Employee dbEmployee = entityManager.merge(theEmployee);
+		
+		// update with id from db ...so we can get generated id for insert
+		theEmployee.setId(dbEmployee.getId());
 		
 
 	}
@@ -49,7 +60,12 @@ public class EmployeeDAOJpaImpl implements EmployeeDAO {
 	@Override
 	public void deleteById(int theId) {
 		
+		//delete object with primary key
+		Query theQuery = entityManager.createQuery("delete from Employee where id=:employeeId");
 
+		theQuery.setParameter("employeeId", theId);
+		
+		theQuery.executeUpdate();
 	}
 
 }
